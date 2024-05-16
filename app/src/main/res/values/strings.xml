@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">IP-Challenge</string>
+
+    <string name="title">IP-Challenge</string>
+    <string name="enter_ip_hint">Enter a valid IP Address</string>
+    <string name="search_ip_button">Search IP Address</string>
+</resources>

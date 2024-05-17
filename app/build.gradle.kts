@@ -67,10 +67,11 @@ dependencies {
     // preferences DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
-    // retrofit
+    // retrofit and okHttp interceptor
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
     implementation("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:1.0.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     // moshi converter
     implementation("com.squareup.moshi:moshi-kotlin:1.14.0")

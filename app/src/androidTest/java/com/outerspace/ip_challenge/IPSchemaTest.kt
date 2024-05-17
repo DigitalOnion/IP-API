@@ -19,7 +19,7 @@ class IPSchemaTest {
     fun ipSchemaTest() {
         runTest {
             val ip = "24.48.0.1"
-            val schema: IPSchema = IPClient().getIPSchema(ip)
+            val schema: IPSchema = IPClient().fetchIPSchema(ip)
 
             Log.d(TESTTAG, "Response Schema: ${schema.city}")
         }

@@ -1,12 +1,8 @@
 package com.outerspace.ip_challenge.data_layer
 
-import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
-import java.time.Instant
-import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Entity(tableName = "ip_addresses")
@@ -26,6 +22,23 @@ data class IPEntity(
     @ColumnInfo(name = "org") val org: String?,
     @ColumnInfo(name = "autonomousSystem") val autonomousSystem: String?,
 
-    @ColumnInfo(name = "timestamp", defaultValue = "CURRENT_TIMESTAMP") val timestamp: ZonedDateTime?,
-)
+    @ColumnInfo(name = "timestamp") val timestamp: ZonedDateTime?,
+    ) {
+    constructor( pkIP: String,
+                 status: String?,
+                 country: String?,
+                 countryCode: String?,
+                 region: String?,
+                 regionName: String?,
+                 city: String?,
+                 zip: String?,
+                 lat: Double?,
+                 lon: Double?,
+                 timezone: String?,
+                 isp: String?,
+                 org: String?,
+                 autonomousSystem: String?,
+    ) : this(pkIP ,status ,country ,countryCode ,region ,regionName ,city ,zip ,lat ,lon ,timezone ,isp ,org ,autonomousSystem,
+        ZonedDateTime.now())
+}
 

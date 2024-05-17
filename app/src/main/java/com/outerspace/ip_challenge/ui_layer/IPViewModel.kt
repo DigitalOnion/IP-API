@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.outerspace.ip_challenge.data_layer.IPEntity
 import com.outerspace.ip_challenge.data_layer.IPRepository
-import com.outerspace.ip_challenge.network_layer.IPSchema
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

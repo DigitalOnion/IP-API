@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.util.Base64
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
 import com.outerspace.ip_challenge.data_layer.IPEntity
 import com.outerspace.ip_challenge.databinding.ActivityMainBinding
@@ -14,10 +16,11 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
-    private val viewModel: IPViewModel = IPViewModel(this as LifecycleOwner)     // TODO: implement a factory and create from ViewModelProvider
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val ipViewModelFactory = IPViewModel.Factory(this as LifecycleOwner)
+        val viewModel = ViewModelProvider(this as ViewModelStoreOwner, ipViewModelFactory)[IPViewModel::class]
 
         binding = DataBindingUtil
             .setContentView(this, R.layout.activity_main)

@@ -14,6 +14,7 @@ import java.time.ZonedDateTime
 const val DB_NAME = "IP_Challenge_Database"
 
 const val EXPIRE_MILLS: Long = 1000L * 60L * 5L         // 5 minutes in milliseconds
+const val FAIL_STATUS = "fail"
 
 class IPRepository {
     private val context = IPChallengeApplication.appContext()
@@ -35,12 +36,19 @@ class IPRepository {
     suspend fun replaceIP(ip: IPEntity) = dao.updateIP(ip)
 
     suspend fun getIPById(ipId: String, scope: CoroutineScope): IPEntity {
-        val result: IPEntity? = dao.getIpById(ipId)
+        val result: IPEntity? = if (ipId.isNotEmpty())
+            dao.getIpById(ipId)
+        else
+            IPEntity.FAIL
         val ip = if (result == null) {
             val entity = fetch(ipId, scope)
             addIP(entity)
             entity
-        } else if ( timestampIsExpired(result.timestamp, EXPIRE_MILLS) ){
+        } else if ( result.status == FAIL_STATUS) {
+            val entity = fetch("", scope)
+            replaceIP(entity)
+            entity
+        } else if ( timestampIsExpired(result.timestamp, EXPIRE_MILLS) ) {
             val entity = fetch(ipId, scope)
             replaceIP(entity)
             entity

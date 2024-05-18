@@ -40,5 +40,9 @@ data class IPEntity(
                  autonomousSystem: String?,
     ) : this(pkIP ,status ,country ,countryCode ,region ,regionName ,city ,zip ,lat ,lon ,timezone ,isp ,org ,autonomousSystem,
         ZonedDateTime.now())
+
+    companion object {
+        val FAIL = IPEntity("unknown-ip", "fail", "", "", "", "", "", "", 0.0, 0.0, "", "", "", "", ZonedDateTime.now())
+    }
 }
 

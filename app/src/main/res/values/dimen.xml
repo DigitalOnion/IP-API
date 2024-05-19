@@ -2,4 +2,6 @@
 <resources>
     <dimen name="app_margin">32dp</dimen>
     <dimen name="vertical_spacing">32dp</dimen>
+    <dimen name="progress_bar_elevation">10dp</dimen>
+    <dimen name="progress_bar_padding">120dp</dimen>
 </resources>

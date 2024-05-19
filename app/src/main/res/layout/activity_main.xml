@@ -57,6 +57,13 @@
             app:layout_constraintTop_toBottomOf="@id/search_button"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
+        <ProgressBar
+            android:id="@+id/progress"
+            android:visibility="gone"
+            android:padding="@dimen/progress_bar_padding"
+            android:elevation="@dimen/progress_bar_elevation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

@@ -3,6 +3,7 @@ package com.outerspace.ip_challenge
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Base64
+import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         binding.ipViewModel = viewModel
 
         binding.searchButton.setOnClickListener {
+            binding.progress.visibility = View.VISIBLE
             val ipStr = binding.ipAddressInput.text.toString()
             lifecycleScope.launch {
                 viewModel.evaluateIpAddress(ipStr, lifecycleScope)
@@ -39,6 +41,7 @@ class MainActivity : AppCompatActivity() {
                 val unencodedHtml = formatIPEntity(ipEntity)
                 val encodedHtml: String = Base64.encodeToString(unencodedHtml.toByteArray(), Base64.NO_PADDING)
                 binding.output.loadData(encodedHtml, "text/html", "base64")
+                binding.progress.visibility = View.GONE
             }
         }
     }

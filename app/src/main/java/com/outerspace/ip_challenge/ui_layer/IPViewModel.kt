@@ -7,16 +7,33 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.outerspace.ip_challenge.data_layer.IPEntity
 import com.outerspace.ip_challenge.data_layer.IPRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class IPViewModel(private val owner: LifecycleOwner): ViewModel() {
-    // influx from UI to Data
-    val mutableIpAddress: MutableLiveData<String> = MutableLiveData()
+    // Repository
+    private val ipRepository: IPRepository = IPRepository(owner)
 
-    // influx from Data Layer to UI
-    val mutableIpEntity: MutableLiveData<IPEntity> = MutableLiveData()
+    // influx from UI to Data
+    suspend fun evaluateIpAddress(ipAddress: String, scope: CoroutineScope) {
+        ipRepository.evaluateIpAddress(ipAddress, scope)
+    }
+
+    // efflux from Data Layer to UI
+    private val mutableIpEntity: MutableLiveData<IPEntity> = MutableLiveData()
+
+    init {
+        ipRepository.onAcquireIpEntity = { ipEntity ->
+            mutableIpEntity.value = ipEntity
+        }
+    }
+
+    var ipEntityListener: (IPEntity) -> Unit = {}
+        set(listener) {
+            mutableIpEntity.observe(owner, listener)
+        }
 
     class Factory(
         private val lifecycleOwner: LifecycleOwner,
@@ -26,15 +43,4 @@ class IPViewModel(private val owner: LifecycleOwner): ViewModel() {
         }
     }
 
-    init {
-        mutableIpAddress.observe(owner) {                   // query an IP address (most likely by the UI)
-            viewModelScope.launch(Dispatchers.IO) {
-                val ip: String = mutableIpAddress.value ?: ""
-                val entity: IPEntity = IPRepository().getIPById(ip, viewModelScope)
-                withContext(Dispatchers.Main) {
-                    mutableIpEntity.value = entity
-                }
-            }
-        }
-    }
 }

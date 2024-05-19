@@ -28,10 +28,13 @@ class MainActivity : AppCompatActivity() {
         binding.ipViewModel = viewModel
 
         binding.searchButton.setOnClickListener {
-            viewModel.mutableIpAddress.value = binding.ipAddressInput.text.toString()
+            val ipStr = binding.ipAddressInput.text.toString()
+            lifecycleScope.launch {
+                viewModel.evaluateIpAddress(ipStr, lifecycleScope)
+            }
         }
 
-        viewModel.mutableIpEntity.observe(this as LifecycleOwner) { ipEntity ->
+        viewModel.ipEntityListener = {ipEntity ->
             lifecycleScope.launch {
                 val unencodedHtml = formatIPEntity(ipEntity)
                 val encodedHtml: String = Base64.encodeToString(unencodedHtml.toByteArray(), Base64.NO_PADDING)
@@ -40,11 +43,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    val TABLE_HEAD = "<table>"
-    val LINE_START = "<tr><td>"
-    val SEPARATOR = "</td><td><b>"
-    val LINE_END = "</b></td></tr>"
-    val TABLE_FOOT = "</table>"
+    private val TABLE_HEAD = "<table>"
+    private val LINE_START = "<tr><td>"
+    private val SEPARATOR = "</td><td><b>"
+    private val LINE_END = "</b></td></tr>"
+    private val TABLE_FOOT = "</table>"
 
     private fun formatIPEntity(ip: IPEntity): String {
         val sb = StringBuilder()

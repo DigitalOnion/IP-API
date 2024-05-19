@@ -1,6 +1,8 @@
 package com.outerspace.ip_challenge.data_layer
 
 import android.util.Log
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import com.outerspace.ip_challenge.IPChallengeApplication
 import com.outerspace.ip_challenge.network_layer.IPClient
@@ -9,6 +11,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import java.time.ZonedDateTime
 
 const val DB_NAME = "IP_Challenge_Database"
@@ -16,10 +20,23 @@ const val DB_NAME = "IP_Challenge_Database"
 const val EXPIRE_MILLS: Long = 1000L * 60L * 5L         // 5 minutes in milliseconds
 const val FAIL_STATUS = "fail"
 
-class IPRepository {
+class IPRepository(val owner: LifecycleOwner) {
     private val context = IPChallengeApplication.appContext()
     private val db = Room.databaseBuilder(context, IPRoomDB::class.java, DB_NAME).build()
     private val dao = db.ipDao()
+
+    private val mutableIpEntity = MutableLiveData<IPEntity>()
+
+    var onAcquireIpEntity: (IPEntity) -> Unit = {}
+        set(callback) {
+            field = callback
+            mutableIpEntity.observe(owner, callback)
+        }
+
+    suspend fun evaluateIpAddress(ipAddress: String, scope: CoroutineScope) {
+        val ipEntity = getIPById(ipAddress, scope)
+        mutableIpEntity.value = ipEntity
+    }
 
     fun IPSchema.toIpEntity(): IPEntity {
         return IPEntity(
